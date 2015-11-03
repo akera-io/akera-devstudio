@@ -14,14 +14,15 @@ function AkeraDevStudio(akeraWebInstance) {
 
 AkeraDevStudio.prototype.init = function(brokerName, route) {
     var app = this.akeraWebInstance.app;
-
+    var self = this;
     route = (route === '/' ? '/studio' : route) || '/studio';
     app.use(route + (brokerName ? '/' + brokerName : '/:broker'), express.static(www_path));
     app.get(route + (brokerName ? '/' + brokerName : '/:broker'), function(req, res) {
         var brkName = req.params.broker;
         var templateFn = require('jade').compileFile(require.resolve('../www/index.jade'));
         res.status(200).send(templateFn({
-            broker: brkName
+            broker: brkName,
+            restRoute: self.akeraWebInstance.akeraServices.restRoute
         }));
 
     });

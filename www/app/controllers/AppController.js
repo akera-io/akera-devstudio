@@ -4,7 +4,9 @@ angular.module('AkeraDevStudio')
             $scope.fileModified = true;
         }
         dataStore.storeData('brokerName', brokerName);
+        dataStore.storeData('restRoute', restRoute);
         brokerName = null;
+        restRoute = null;
         $scope.editors = [];
         $scope.$on('fileOpened', function(ev, data) {
             for (var i in $scope.editors) {

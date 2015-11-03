@@ -16,7 +16,6 @@ angular.module('AkeraDevStudio')
         $scope.newType = 'Folder';
 
         $scope.edit = function(scope) {
-            console.log(scope.$modelValue);
             fileUtil.requestFileContent(dataStore.getData('brokerName'), scope.$modelValue.path).then(function(response) {
                 $rootScope.$broadcast('fileOpened', {
                     name: scope.$modelValue.title,
@@ -36,7 +35,6 @@ angular.module('AkeraDevStudio')
 
             if (scope.collapsed) {
                 fileUtil.expandNode(dataStore.getData('brokerName'), scope.$modelValue).then(function(result) {
-                    console.log(result);
                 }, function(err) {
                     $mdToast.show($mdToast.simple().content(err.message || 'There was an error getting contents of the ' + scope.$modelValue.title + ' directory.'));
                 });
@@ -55,7 +53,6 @@ angular.module('AkeraDevStudio')
 
         $scope.removeItem = function(scope) {
             fileUtil.deleteFile(dataStore.getData('brokerName'), scope.$modelValue).then(function() {
-                console.log(scope);
                 scope.remove();
                 $mdToast.show($mdToast.simple().content(scope.$modelValue.title + ' sucessfully deleted.'));
             }, function(err) {

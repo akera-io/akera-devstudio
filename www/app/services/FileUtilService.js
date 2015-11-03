@@ -1,6 +1,19 @@
 angular.module('AkeraDevStudio')
-    .service('FileUtil', ['$http', '$q', function($http, $q) {
+    .service('FileUtil', ['$http', '$q', 'DataStore', function($http, $q, dataStore) {
         var data = {};
+
+        var getRestRoute = function() {
+            var restRoute = '../..';
+            if (dataStore.getData('restRoute').indexOf('/') !== 0) {
+                restRoute += '/';
+            }
+            restRoute += dataStore.getData('restRoute');
+
+            if (restRoute.charAt(restRoute.length - 1) !== '/') {
+                restRoute += '/';
+            }
+            return restRoute;
+        }
 
         var getFilePath = function(node) {
             var path = node.$modelValue.title;
@@ -25,7 +38,6 @@ angular.module('AkeraDevStudio')
         var convertFileStructure = function(struct) {
             var nodes = [];
             struct.forEach(function(itm) {
-                console.log(itm);
                 var converted = {
                     path: itm.path || '/' + itm.name,
                     type: itm.type || (itm.isDir ? 'folder' : 'file'),
@@ -55,7 +67,7 @@ angular.module('AkeraDevStudio')
 
         var requestFileStructure = function(brokerName, path) {
             var deferred = $q.defer();
-            $http.get('../../rest/' + brokerName + '/file' + (path.indexOf('/') === 0 ? '' : '/') + path)
+            $http.get(getRestRoute() + brokerName + '/file' + (path.indexOf('/') === 0 ? '' : '/') + path)
                 .success(function(result) {
                     deferred.resolve(convertFileStructure(result));
                 })
@@ -78,7 +90,7 @@ angular.module('AkeraDevStudio')
 
         var requestFileContent = function(brokerName, path) {
             var deferred = $q.defer();
-            $http.get('../../rest/' + brokerName + '/file' + (path.indexOf('/') === 0 ? '' : '/') + path)
+            $http.get(getRestRoute() + brokerName + '/file' + (path.indexOf('/') === 0 ? '' : '/') + path)
                 .success(function(result) {
                     deferred.resolve(result);
                 })
@@ -90,8 +102,7 @@ angular.module('AkeraDevStudio')
 
         var createFile = function(brokerName, file) {
             var deferred = $q.defer();
-            console.log(file);
-            $http.put('../../rest/' + brokerName + '/file' + (file.path.indexOf('/') === 0 ? '' : '/') + file.path, {
+            $http.put(getRestRoute() + brokerName + '/file' + (file.path.indexOf('/') === 0 ? '' : '/') + file.path, {
                     isDir: file.type === 'folder'
                 })
                 .success(function(result) {
@@ -105,7 +116,7 @@ angular.module('AkeraDevStudio')
 
         var saveFile = function(brokerName, file) {
             var deferred = $q.defer();
-            $http.post('../../rest/' + brokerName + '/file' + (file.path.indexOf('/') === 0 ? '' : '/') + file.path, {
+            $http.post(getRestRoute() + brokerName + '/file' + (file.path.indexOf('/') === 0 ? '' : '/') + file.path, {
                     content: file.content
                 })
                 .success(function(result) {
@@ -119,7 +130,7 @@ angular.module('AkeraDevStudio')
 
         var deleteFile = function(brokerName, file) {
             var deferred = $q.defer();
-            $http.delete('../../rest/' + brokerName + '/file' + (file.path.indexOf('/') === 0 ? '' : '/') + file.path)
+            $http.delete(getRestRoute() + brokerName + '/file' + (file.path.indexOf('/') === 0 ? '' : '/') + file.path)
                 .success(function(result) {
                     deferred.resolve(result);
                 })
