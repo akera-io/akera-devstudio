@@ -1,0 +1,30 @@
+{
+  "name": "akera-devstudio",
+  "main": "index.js",
+  "version": "0.1.0",
+  "description": "Akera Developer Studio component of Akera-Web",
+  "authors": [
+    "Radu Nicoara"
+  ],
+  "dependencies": {
+    "ace-builds":"latest",
+    "angular":"latest",
+    "angular-material":"latest",
+    "angular-material-data-table":"latest",
+    "angular-ui-ace":"latest",
+    "angular-ui-tree":"latest",
+    "bootstrap":"latest",
+    "jquery":"latest",
+    "requirejs":"latest",
+    "angular-animate":"latest"
+  },
+  "license": "MIT",
+  "homepage": "http://akera.io",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

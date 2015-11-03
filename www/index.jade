@@ -1,0 +1,94 @@
+html(lang='en', ng-app='AkeraDevStudio')
+  head
+    script.
+        brokerName = '#{broker}'
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    link(rel='stylesheet', type='text/css', href='libs/bootstrap/dist/css/bootstrap.min.css')
+    link(rel='stylesheet', type='text/css', href='libs/angular-material/angular-material.min.css')
+    link(rel='stylesheet', type='text/css', href='https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css')
+    link(rel='stylesheet', type='text/css', href='libs/angular-ui-tree/dist/angular-ui-tree.min.css')
+    link(rel='stylesheet', type='text/css', href='libs/angular-material-data-table/dist/md-data-table.min.css')
+    link(rel='stylesheet', type='text/css', href='libs/kendo-ui/kendo.common-material.min.css')
+    link(rel='stylesheet', type='text/css', href='libs/kendo-ui/kendo.material.min.css')
+    link(rel='stylesheet', type='text/css', href='css/style.css')
+  body(style='font-size: 200%;', layout-wrap='column', ng-controller='AppCtrl')
+    md-toolbar(layout='row')
+        md-toolbar-tools
+          h1
+            span Akera DevStudio [#{broker}]
+            span(ng-if='editors[selectedEditor].file', hide-md='') [{{editors[selectedEditor].file.name}}]
+        .md-padding(layout='row', layout-margin='', style='width: autopx; right: 10px; z-index: 10; top: 70px; position: fixed')
+          md-button.md-fab.md-primary.md-hue-1(ng-click='openFolderSideNav()', aria-label='Folder Actions')
+            i.fa.fa-folder-open-o
+          md-button.md-fab.md-primary.md-hue-1(ng-click='save()', aria-label='File Actions', ng-disabled='!editors[selectedEditor].file')
+            i.fa.fa-floppy-o
+          md-button.md-fab.md-primary.md-hue-1(ng-click='runProcedure()', ng-disabled='!editors[selectedEditor].file || !editors[selectedEditor].file.content')
+            i.fa.fa-cog
+    md-tabs(md-selected='selectedEditor', md-dynamic-height='true', md-no-ink='true')
+      md-tab(ng-repeat='editor in editors')
+        md-tab-label(layout='row')
+          | {{editor.file.name}}
+          span(flex='')
+          span(ng-click='closeEditor(editor)')        &times
+        md-tab-body
+          div(style='margin-top: 1px;', ui-ace="{\
+          useWrapMode : true,\
+          showGutter: true,\
+          firstLineNumber: 1,\
+          onLoad: aceLoaded,\
+          onChange: editorChanged,\
+          require: ['ace/ext/language_tools'],\
+          rendererOptions: {\
+          fontSize: 20\
+          },\
+          advanced: {\
+          enableSnippets: true,\
+          enableBasicAutocompletion: true,\
+          enableLiveAutocompletion: true\
+          }\
+          }", ng-if='editor.file.content', name="editor.file.name + 'fileEditor'", ng-model='editor.file.content')
+    md-sidenav#folderNav.md-sidenav-right.md-whiteframe-z2(md-component-id='folderActions', style='overflow-x: hidden;')
+      md-subheader File Structure
+      md-divider
+      md-content.md-padding(layout='column', flex='')
+        .container(style='width:100%;', ng-controller='FileExplorer', flex='80')
+          script(type='text/ng-template', id='nodes_renderer.html').
+            <div style="margin-top: 5px;" ui-tree-handle data-collapsed class="tree-node tree-node-content">
+            <a style="font-size: 100%" ng-if="node.type == 'folder'" data-nodrag ng-click="toggleTreeItem(this)"><i ng-class="{'fa fa-folder-o': collapsed, 'fa fa-folder-open-o': !collapsed}"></i></a>
+            <a style="font-size: 100%" ng-if="node.type == 'file'" ng-click="selectTreeItem(this)" data-nodrag><i class="fa fa-file-text-o"></i></a>
+            <md-tooltip>{{node.path}}</md-tooltip>
+            {{node.title}}
+            <a class="pull-right btn btn-danger btn-xs" data-nodrag ng-click="removeItem(this)"><i class="fa fa-minus"></i></a>
+            <a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="edit(this)" ng-if="node.type == 'file'" style="margin-right: 8px;"><i class="fa fa-pencil"></i></a>
+            <a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="newSubItem(this)" ng-if="node.type == 'folder'" style="margin-right: 8px;"><i class="fa fa-plus"></i></a>
+            </div>
+            <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
+            <li ng-repeat="node in node.nodes" data-collapsed="true" ui-tree-node ng-include="'nodes_renderer.html'">
+            </li>
+            </ol>
+          #tree-root(ui-tree='', data-nodrag='', data-collapsed='true', data-drag-enabled='false', flex='', ng-model='tree')
+            ol#tree-nodes(ui-tree-nodes='', ng-model='data', data-nodrag='', data-drag-enabled='false')
+              li(ng-repeat='node in data', data-collapsed="node.title !== 'Root'", data-nodrag='', data-drag-enabled='false', ui-tree-node='', ng-include="'nodes_renderer.html'")
+      md-button.md-primary(ng-click='closeFolderNav()', style='width: 100%; bottom: 10px;')
+        | Close
+      md-sidenav
+        // Dependencies
+        script(type='text/javascript', src='libs/jquery/dist/jquery.min.js')
+        script(type='text/javascript', src='libs/angular/angular.js')
+        script(type='text/javascript', src='libs/angular-animate/angular-animate.min.js')
+        script(type='text/javascript', src='libs/angular-aria/angular-aria.min.js')
+        script(type='text/javascript', src='libs/angular-material/angular-material.min.js')
+        script(type='text/javascript', src='libs/ace-builds/src-min-noconflict/ace.js')
+        script(type='text/javascript', src='libs/angular-ui-ace/ui-ace.js')
+        script(type='text/javascript', src='libs/ace-builds/src-min-noconflict/ext-language_tools.js')
+        script(type='text/javascript', src='libs/angular-ui-tree/dist/angular-ui-tree.min.js')
+        script(type='text/javascript', src='libs/angular-material-data-table/dist/md-data-table.min.js')
+        script(type='text/javascript', src='app.js')
+        script(type='text/javascript', src='app/services/DataStoreService.js')
+        script(type='text/javascript', src='app/services/FileUtilService.js')
+        script(type='text/javascript', src='app/controllers/RunProcDialogController.js')
+        script(type='text/javascript', src='app/controllers/AppController.js')
+        script(type='text/javascript', src='app/controllers/CreateFileDialogController.js')
+        script(type='text/javascript', src='app/controllers/FileExplorerController.js')
+        script(type='text/javascript', src='app/controllers/OutputDialogController.js')
+

@@ -1,0 +1,32 @@
+<md-dialog flex="40">
+<md-dialog-content>
+<div layout="column" flex>
+    <md-toolbar>
+    <h2>Output</h2>
+    </md-toolbar>
+    <md-data-table-container>
+    <table md-data-table style="margin-top:10px;" md-row-select="selected">
+        <thead>
+            <tr>
+                <th>Parameter</th>
+                <th>Return Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr md-auto-select ng-repeat="param in params">
+                <td name="{{param.alias}}">
+                    <input class="k-textbox" type="text" disabled="true" ng-model="param.alias"/>
+                </td>
+                <td name="{{param.alias + '_value'">
+                    <input class='k-textbox' type="text" disabled="true" ng-model="param.value"/>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    </md-data-table-container>
+</div>
+<div class="md-actions">
+    <md-button class="md-primary" ng-click="close()">Close</md-button>
+</div>
+</md-dialog-content>
+</md-dialog>

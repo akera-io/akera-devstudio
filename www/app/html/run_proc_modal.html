@@ -1,0 +1,67 @@
+<md-dialog flex="70">
+<md-dialog-content layout="column" style="height: 500px; overflow-y: hidden;">
+<md-toolbar ng-show="selected.length === 0">
+<h2>  Configure Parameters</h2>
+</md-toolbar>
+<md-data-table-toolbar ng-show="selected.length > 0">
+<span flex></span>
+<md-button class="md-default md-raised" ng-click="removeParams()">
+Remove {{selected.length}} {{selected.length > 1 ? 'parameters' : 'parameter'}}
+</md-button>
+</md-data-table-toolbar>
+<md-data-table-container>
+<table md-data-table style="margin-top:10px;" md-row-select="selected">
+    <thead>
+        <tr>
+            <th></th>
+            <th ng-repeat="column in columns" ng-attr-numeric="{{column.numeric}}" name="{{column.name}}">
+                {{column.name}}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr md-auto-select ng-repeat="param in params">
+            <td>
+                <md-checkbox ng-change="updateSelection(param)" ng-model="param.selected"></md-checkbox>
+            </td>
+            <td>
+                <input class="k-textbox" type="text" ng-model="param.alias"/>
+            </td>
+            <td>
+                <md-autocomplete md-selected-item="param.dataType" md-search-text="searchText" md-items="item in getDataTypes(searchText)">
+                <span md-highlight-text="searchText.toUpperCase()">{{item}}</span>
+                </md-autocomplete>
+            </td>
+            <td ng-switch="param.dataType">
+                <input ng-switch-default class="k-textbox" type="text" ng-model="param.value"/>
+                <input class="k-textbox" type="number" ng-switch-when="INTEGER" ng-model="param.value"/>
+                <input class="k-textbox" type="number" ng-switch-when="INT64" ng-model="param.value"/>
+                <input class="k-textbox" type="number" ng-switch-when="DECIMAL" step="0.1" ng-model="param.value"/>
+                <md-datepicker ng-model="param.value" ng-switch-when="DATE"></md-datepicker>
+                <input type="datetime" ng-switch-when="DATETIME" ng-model="param.value"/>
+                <md-select ng-switch-when="LOGICAL" ng-model="param.value">
+                <md-option value="true">true</md-option>
+                <md-option value="false">false</md-option>
+                </md-select>
+            </td>
+            <td>
+                <md-select ng-model="param.type">
+                <md-option value="input">Input</md-option>
+                <md-option value="output">Output</md-option>
+                <md-option value="input/output">Input/Output</md-option>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</md-data-table-container>
+<md-data-table-toolbar style="bottom: 0px;">
+
+</md-data-table-toolbar>
+</md-dialog-content>
+<div class="md-actions">
+    <md-button class="md-default md-raised" ng-click="addParam()">Add</md-button>
+    <span flex></span>
+    <md-button class="md-default md-raised" ng-click="close()">Cancel</md-button>
+    <md-button class="md-primary md-raised" aria-label="Run" value="Run" ng-click="run()">Run</md-button>
+</div>
+</md-dialog>

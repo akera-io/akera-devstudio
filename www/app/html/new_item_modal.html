@@ -1,0 +1,31 @@
+<md-dialog >
+<md-toolbar>
+    <div class="md-toolbar-tools">
+      <span>Create {{newType.toLowerCase()}}</span>
+      <span flex></span>
+    </div>
+  </md-toolbar>
+	<md-content layout="column">
+		<form id="fm" style="margin-top: 5px;">
+			<div layout="column">
+				<md-select-label>Item type:</md-select-label>
+				<md-select ng-model="newType">
+				  <md-option ng-value="opt" ng-repeat="opt in ['Folder','File']">{{ opt }}</md-option>
+				</md-select>
+				
+				<md-input-container>
+				<label>{{newType}} name:</label>
+				<input style="margin-top: 10px;" type="text" ng-model="newName" required="true">
+				</md-input-container>
+				<md-checkbox ng-model="edit" ng-show="newType.toLowerCase() == 'file'">
+					Open in editor
+				</md-checkbox>
+			</div>
+		</form>
+
+		<div class="md-actions">
+			<md-button ng-click="cancel()">Cancel</md-button>
+			<md-button type="submit" form="fm" aria-label="Create" value="Create" ng-click="createItem()">Create</md-button>
+		</div>
+	</md-content>
+</md-dialog>
