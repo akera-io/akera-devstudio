@@ -54,10 +54,10 @@ html(lang='en', ng-app='AkeraDevStudio')
         .container(style='width:100%;', ng-controller='FileExplorer', flex='80')
           script(type='text/ng-template', id='nodes_renderer.html').
             <div style="margin-top: 5px;" ui-tree-handle data-collapsed class="tree-node tree-node-content">
-            <a style="font-size: 100%" ng-if="node.type == 'folder'" data-nodrag ng-click="toggleTreeItem(this)"><i ng-class="{'fa fa-folder-o': collapsed, 'fa fa-folder-open-o': !collapsed}"></i></a>
-            <a style="font-size: 100%" ng-if="node.type == 'file'" ng-click="selectTreeItem(this)" data-nodrag><i class="fa fa-file-text-o"></i></a>
+            <a style="font-size: 100%" ng-if="node.type == 'folder'" class="node-heading" ng-click="toggleTreeItem(this)" data-nodrag "><i ng-class="{'fa fa-folder-o': collapsed, 'fa fa-folder-open-o': !collapsed}"></i></a>
+            <a style="font-size: 100%" ng-if="node.type == 'file'" class="node-heading" ng-click="toggleTreeItem(this)" data-nodrag><i class="fa fa-file-text-o"></i></a>
             <md-tooltip>{{node.path}}</md-tooltip>
-            {{node.title}}
+            <span ng-click="toggleTreeItem(this)">{{node.title}}</span>
             <a class="pull-right btn btn-danger btn-xs" data-nodrag ng-click="removeItem(this)"><i class="fa fa-minus"></i></a>
             <a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="edit(this)" ng-if="node.type == 'file'" style="margin-right: 8px;"><i class="fa fa-pencil"></i></a>
             <a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="newSubItem(this)" ng-if="node.type == 'folder'" style="margin-right: 8px;"><i class="fa fa-plus"></i></a>

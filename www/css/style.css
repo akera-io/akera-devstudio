@@ -25,6 +25,6 @@ md-sidenav.md-closed.md-locked-open-add-active {
     transition: none;
 }
 
-.angular-ui-tree-node {
+.angular-ui-tree-handle, .tree-node.tree-node-content > .node-heading {
     cursor: pointer !important;
 }

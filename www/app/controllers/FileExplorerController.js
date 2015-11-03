@@ -29,6 +29,11 @@ angular.module('AkeraDevStudio')
         }
 
         $scope.toggleTreeItem = function(scope) {
+            if (scope.$modelValue.type === 'file') {
+                $scope.edit(scope);
+                return;
+            }
+
             if (scope.collapsed) {
                 fileUtil.expandNode(dataStore.getData('brokerName'), scope.$modelValue).then(function(result) {
                     console.log(result);
