@@ -7,16 +7,17 @@
     "Radu Nicoara"
   ],
   "dependencies": {
-    "ace-builds":"latest",
-    "angular":"latest",
-    "angular-material":"latest",
-    "angular-material-data-table":"latest",
-    "angular-ui-ace":"latest",
-    "angular-ui-tree":"latest",
-    "bootstrap":"latest",
-    "jquery":"latest",
-    "requirejs":"latest",
-    "angular-animate":"latest"
+    "ace-builds": "latest",
+    "angular": "latest",
+    "angular-material": "latest",
+    "angular-material-data-table": "latest",
+    "angular-ui-ace": "latest",
+    "angular-ui-tree": "latest",
+    "bootstrap": "latest",
+    "jquery": "latest",
+    "requirejs": "latest",
+    "angular-animate": "latest",
+    "font-awesome": "fontawesome#~4.5.0"
   },
   "license": "MIT",
   "homepage": "http://akera.io",
@@ -26,5 +27,8 @@
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "resolutions": {
+    "angular": "1.2.x || 1.3.x || 1.4.x"
+  }
 }

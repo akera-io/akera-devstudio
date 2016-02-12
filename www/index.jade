@@ -6,7 +6,7 @@ html(lang='en', ng-app='AkeraDevStudio')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
     link(rel='stylesheet', type='text/css', href='libs/bootstrap/dist/css/bootstrap.min.css')
     link(rel='stylesheet', type='text/css', href='libs/angular-material/angular-material.min.css')
-    link(rel='stylesheet', type='text/css', href='https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css')
+    link(rel='stylesheet', type='text/css', href='libs/font-awesome/css/font-awesome.min.css')
     link(rel='stylesheet', type='text/css', href='libs/angular-ui-tree/dist/angular-ui-tree.min.css')
     link(rel='stylesheet', type='text/css', href='libs/angular-material-data-table/dist/md-data-table.min.css')
     link(rel='stylesheet', type='text/css', href='libs/kendo-ui/kendo.common-material.min.css')
@@ -19,12 +19,18 @@ html(lang='en', ng-app='AkeraDevStudio')
             span Akera DevStudio [#{broker}]
             span(ng-if='editors[selectedEditor].file', hide-md='') [{{editors[selectedEditor].file.name}}]
         .md-padding(layout='row', layout-margin='', style='width: autopx; right: 10px; z-index: 10; top: 70px; position: fixed')
+          md-button.md-fab.md-primary.md-hue-1(ng-click='newFile()')
+            i.fa.fa-file-text-o 
           md-button.md-fab.md-primary.md-hue-1(ng-click='openFolderSideNav()', aria-label='Folder Actions')
             i.fa.fa-folder-open-o
           md-button.md-fab.md-primary.md-hue-1(ng-click='save()', aria-label='File Actions', ng-disabled='!editors[selectedEditor].file')
             i.fa.fa-floppy-o
           md-button.md-fab.md-primary.md-hue-1(ng-click='runProcedure()', ng-disabled='!editors[selectedEditor].file || !editors[selectedEditor].file.content')
             i.fa.fa-cog
+          md-button.md-fab.md-primary.md-hue-1(ng-click='checkSyntax()', ng-disabled='!editors[selectedEditor].file')
+            i.fa.fa-check
+          md-button.md-fab.md-primary.md-hue-1(ng-click='compile()', ng-disabled='!editors[selectedEditor].file')
+            i.fa.fa-cogs
     md-tabs(md-selected='selectedEditor', md-dynamic-height='true', md-no-ink='true')
       md-tab(ng-repeat='editor in editors')
         md-tab-label(layout='row')
@@ -40,14 +46,14 @@ html(lang='en', ng-app='AkeraDevStudio')
           onChange: editorChanged,\
           require: ['ace/ext/language_tools'],\
           rendererOptions: {\
-          fontSize: 20\
+          fontSize: 16\
           },\
           advanced: {\
           enableSnippets: true,\
           enableBasicAutocompletion: true,\
           enableLiveAutocompletion: true\
           }\
-          }", ng-if='editor.file.content', name="editor.file.name + 'fileEditor'", ng-model='editor.file.content')
+          }", ng-if='editor.file.content', id="{{editor.edId + 'fileEditor'}}", ng-model='editor.file.content')
     md-sidenav#folderNav.md-sidenav-right.md-whiteframe-z2(md-component-id='folderActions', style='overflow-x: hidden;')
       md-subheader File Structure
       md-divider
@@ -55,13 +61,25 @@ html(lang='en', ng-app='AkeraDevStudio')
         .container(style='width:100%;', ng-controller='FileExplorer', flex='80')
           script(type='text/ng-template', id='nodes_renderer.html').
             <div style="margin-top: 5px;" ui-tree-handle data-collapsed class="tree-node tree-node-content">
+            <md-menu>
+            <div ng-right-click="showCompileMenu(node, $event, $mdOpenMenu)">
             <a style="font-size: 100%" ng-if="node.type == 'folder'" class="node-heading" ng-click="toggleTreeItem(this)" data-nodrag "><i ng-class="{'fa fa-folder-o': collapsed, 'fa fa-folder-open-o': !collapsed}"></i></a>
             <a style="font-size: 100%" ng-if="node.type == 'file'" class="node-heading" ng-click="toggleTreeItem(this)" data-nodrag><i class="fa fa-file-text-o"></i></a>
             <md-tooltip>{{node.path}}</md-tooltip>
             <span ng-click="toggleTreeItem(this)">{{node.title}}</span>
-            <a class="pull-right btn btn-danger btn-xs" data-nodrag ng-click="removeItem(this)"><i class="fa fa-minus"></i></a>
-            <a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="edit(this)" ng-if="node.type == 'file'" style="margin-right: 8px;"><i class="fa fa-pencil"></i></a>
-            <a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="newSubItem(this)" ng-if="node.type == 'folder'" style="margin-right: 8px;"><i class="fa fa-plus"></i></a>
+            </div>
+            <md-menu-content>
+            <md-menu-item ng-if="node.type.toLowerCase() === 'folder'">
+            <md-button class="md-default" ng-click="compileMenuAction()">Compile</md-button>
+            </md-menu-item>
+            <md-menu-item>
+            <md-button class="md-default" ng-click="newSubItem(this)">New</md-button>
+            </md-menu-item>
+            <md-menu-item>
+            <md-button class="md-default" ng-click="removeItem(this)">Delete</md-button>
+            </md-menu-item>
+            </md-menu-content>
+            </md-menu>
             </div>
             <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
             <li ng-repeat="node in node.nodes" data-collapsed="true" ui-tree-node ng-include="'nodes_renderer.html'">
@@ -87,9 +105,14 @@ html(lang='en', ng-app='AkeraDevStudio')
         script(type='text/javascript', src='app.js')
         script(type='text/javascript', src='app/services/DataStoreService.js')
         script(type='text/javascript', src='app/services/FileUtilService.js')
+        script(type='text/javascript', src='app/services/ApiUtilService.js')
         script(type='text/javascript', src='app/controllers/RunProcDialogController.js')
         script(type='text/javascript', src='app/controllers/AppController.js')
         script(type='text/javascript', src='app/controllers/CreateFileDialogController.js')
         script(type='text/javascript', src='app/controllers/FileExplorerController.js')
         script(type='text/javascript', src='app/controllers/OutputDialogController.js')
+        script(type='text/javascript', src='app/controllers/SaveAsController.js')
+        script(type='text/javascript', src='app/controllers/CheckSyntaxController.js')
+        script(type='text/javascript', src='app/controllers/CompileDirController.js')
+        script(type='text/javascript', src='app/directives/ng-right-click.js')
 

@@ -1,0 +1,35 @@
+<md-dialog> <md-toolbar>
+<div class="md-toolbar-tools">
+	<span>Syntax Check</span> <span flex></span>
+</div>
+</md-toolbar> <md-content layout="column">
+<md-data-table-container>
+<table md-data-table style="margin-top:10px;" md-row-select="selected">
+    <thead>
+        <tr>
+            <th ng-repeat="column in columns" ng-attr-numeric="{{column.numeric}}" name="{{column.name}}" ng-class="{'small-col': column.numeric}">
+                {{column.name}}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr md-auto-select ng-repeat="error in errors">
+            <td ng-repeat="column in columns" ng-class="{'small-col': column.numeric}">
+            	<md-tooltip ng-if="!column.numeric">
+            		{{error[column.field]}}
+            	</md-tooltip>
+            	<input class="k-textbox big-col" ng-if="!column.numeric" type="text" ng-model="error[column.field]" disabled="true"/>
+            	<input class="k-textbox small-col" ng-if="column.numeric" type="number" ng-model="error[column.field]" disabled="true"/>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</md-data-table-container>
+
+<div class="md-actions">
+	<md-button type="submit" aria-label="OK" value="OK"
+		ng-click="close()">
+		OK
+    </md-button>
+</div>
+</md-content> </md-dialog>

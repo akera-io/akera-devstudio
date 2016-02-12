@@ -1,0 +1,20 @@
+<md-dialog> <md-toolbar>
+<div class="md-toolbar-tools">
+	<span>Save As...</span> <span flex></span>
+</div>
+</md-toolbar> <md-content layout="column">
+<form id="fm" style="margin-top: 5px;">
+	<div layout="column">
+		<md-input-container> <label>Name</label> <input
+			ng-model="name" type="text" required /> </md-input-container>
+		<md-input-container> <label>Path</label> <input
+			type="text" ng-model="path" required /> </md-input-container>
+	</div>
+</form>
+
+<div class="md-actions">
+	<md-button ng-click="cancel()">Cancel</md-button>
+	<md-button type="submit" form="fm" aria-label="Save" value="Save"
+		ng-click="save()">Save</md-button>
+</div>
+</md-content> </md-dialog>

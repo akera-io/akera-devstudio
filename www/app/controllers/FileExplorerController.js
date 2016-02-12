@@ -12,15 +12,16 @@ angular.module('AkeraDevStudio')
                 $mdToast.show($mdToast.simple().content(err.message || 'There was an error getting the server file structure.'));
             });
         }
-
+        
         $scope.newType = 'Folder';
 
         $scope.edit = function(scope) {
             fileUtil.requestFileContent(dataStore.getData('brokerName'), scope.$modelValue.path).then(function(response) {
                 $rootScope.$broadcast('fileOpened', {
                     name: scope.$modelValue.title,
-                    content: response,
-                    path: scope.$modelValue.path
+                    content: response || '\n',
+                    path: scope.$modelValue.path,
+                    parent: scope.$modelValue.parent
                 });
             }, function(err) {
                 $mdToast.show($mdToast.simple().content('There was an error getting contents of file ' + scope.$modelValue.title));
@@ -35,6 +36,7 @@ angular.module('AkeraDevStudio')
 
             if (scope.collapsed) {
                 fileUtil.expandNode(dataStore.getData('brokerName'), scope.$modelValue).then(function(result) {
+                  dataStore.storeData('fileTree', $scope.data);
                 }, function(err) {
                     $mdToast.show($mdToast.simple().content(err.message || 'There was an error getting contents of the ' + scope.$modelValue.title + ' directory.'));
                 });
@@ -48,6 +50,8 @@ angular.module('AkeraDevStudio')
                 templateUrl: './app/html/new_item_modal.html',
                 parent: document.getElementById('folderNav'),
                 controller: 'CreateFileDialog',
+            }).then(function() {
+              dataStore.storeData('fileTree', $scope.data);
             });
         }
 
@@ -55,8 +59,22 @@ angular.module('AkeraDevStudio')
             fileUtil.deleteFile(dataStore.getData('brokerName'), scope.$modelValue).then(function() {
                 scope.remove();
                 $mdToast.show($mdToast.simple().content(scope.$modelValue.title + ' sucessfully deleted.'));
+                dataStore.storeData('fileTree', $scope.data);
             }, function(err) {
                 $mdToast.show($mdToast.simple().content('There was an error deleting ' + $scope.file.name));
             });
         }
-    }])
+        
+        $scope.showCompileMenu = function(node, event, menuFn) {
+            $scope.compileMenuAction = function() {
+              var chldScope = $scope.$new();
+              chldScope.selectedNode = node;
+              $mdDialog.show({
+                templateUrl: './app/html/compile_dir_modal.html',
+                controller: 'CompileDirController',
+                scope: chldScope
+              });
+            };
+            menuFn(event);
+        };
+    }]);

@@ -28,3 +28,11 @@ md-sidenav.md-closed.md-locked-open-add-active {
 .angular-ui-tree-handle, .tree-node.tree-node-content > .node-heading {
     cursor: pointer !important;
 }
+
+.small-col {
+	width: 70px;
+}
+
+.big-col {
+	width: 400px;
+}

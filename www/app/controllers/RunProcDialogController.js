@@ -60,8 +60,16 @@ angular.module('AkeraDevStudio')
                 procedure: $scope.proc,
                 parameters: $scope.params
             };
-
-            $http.post('../../rest/' + dataStore.getData('brokerName') + '/api', {
+            
+            var path = '../';
+            var rest = dataStore.getData('restRoute');
+            if (rest.indexOf('/') === 0)
+              rest = rest.substring(1, rest.length);
+            if (rest.charAt(rest.length - 1) !== '/')
+              rest += '/';
+            path += rest;
+            console.warn('API PATH ' + path + 'api');
+            $http.post(path + 'api', {
                 call: call
             }).then(function(result) {
                 var childScope = $scope.$parent.$new();
@@ -85,6 +93,7 @@ angular.module('AkeraDevStudio')
                     });
                 });
             }, function(err) {
+                console.error(err);
                 $mdToast.show($mdToast.simple().content(err.data.message || err));
             });
         };

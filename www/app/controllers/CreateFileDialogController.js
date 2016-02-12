@@ -25,12 +25,17 @@ angular.module('AkeraDevStudio')
                     $mdToast.show($mdToast.simple().content(err.message));
                 });
 
-            if ($scope.edit === true)
+            if ($scope.edit === true) {
+                var path = dataStore.getData('selectedFile').$modelValue.path + '/' + $scope.newName;
+                if (path.indexOf('/') === 0) {
+                  path = path.substring(1);
+                }
                 $rootScope.$broadcast('fileOpened', {
                     name: $scope.newName,
-                    path: dataStore.getData('selectedFile').$modelValue.path + $scope.newName,
+                    path: path,
                     content: '\n'
                 });
+            }
             $mdDialog.hide();
         }
 
