@@ -1,16 +1,5 @@
 angular.module('AkeraDevStudio')
   .service('AkeraApiUtil', ['$http', '$q', 'DataStore', function($http, $q, dataStore) {
-    
-      function getRestPath() {
-        var path = '../';
-        var rest = dataStore.getData('restRoute');
-        if (rest.indexOf('/') === 0)
-          rest = rest.substring(1, rest.length);
-        if (rest.charAt(rest.length - 1) !== '/')
-          rest += '/';
-        path += rest;
-        return path;
-      }
       
       var runProcedure = function runProcedure(proc, params) {
         var defered = $q.defer();
@@ -19,9 +8,9 @@ angular.module('AkeraDevStudio')
             parameters: params
         };
         
-        var path = getRestPath();
+        var path = dataStore.getData('restApiRoute');
         
-        $http.post(path + 'api', {
+        $http.post(path, {
             call: call
         }).success(function(result) {
           defered.resolve(result.parameters);
@@ -41,8 +30,8 @@ angular.module('AkeraDevStudio')
                          {type: 'output', dataType: 'longchar', alias: 'errors'}]
         };
         
-        var path = getRestPath();
-        $http.post(path + 'api', {
+        var path = dataStore.getData('restApiRoute');
+        $http.post(path, {
             call: call
         }).success(function(result) {
           var errors = JSON.parse(result.parameters[0]).errors;
@@ -68,8 +57,8 @@ angular.module('AkeraDevStudio')
                          {type: 'output', dataType: 'longchar', alias: 'errors'}]
         };
         
-        var path = getRestPath();
-        $http.post(path + 'api', {
+        var path = dataStore.getData('restApiRoute');
+        $http.post(path, {
           call: call
         }).success(function(result) {
           var errors = JSON.parse(result.parameters[0]).errors;
@@ -92,9 +81,9 @@ angular.module('AkeraDevStudio')
                          {type: 'output', dataType: 'longchar', alias: 'errors'}]
         };
         
-        var path = getRestPath();
+        var path = dataStore.getData('restApiRoute');
         var defered = $q.defer();
-        $http.post(path + 'api', {
+        $http.post(path, {
           call: call
         }).success(function(result) {
           var errors = JSON.parse(result.parameters[0]).errors;

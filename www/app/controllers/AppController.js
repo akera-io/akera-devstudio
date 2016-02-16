@@ -3,10 +3,14 @@ angular.module('AkeraDevStudio')
         $scope.editorChanged = function() {
             $scope.fileModified = true;
         };
+        
+        dataStore.storeData('restApiRoute', restApiRoute);
+        dataStore.storeData('restFileRoute', restFileRoute);
         dataStore.storeData('brokerName', brokerName);
-        dataStore.storeData('restRoute', restRoute);
-        brokerName = null;
-        restRoute = null; 
+        
+        restApiRoute = null; 
+        restFileRoute = null; 
+        
         $scope.editors = [];
         $scope.$on('fileOpened', function(ev, data) {
             for (var i in $scope.editors) {
@@ -21,7 +25,6 @@ angular.module('AkeraDevStudio')
                 file: data,
                 edId: new Date().getTime()
             });
-            console.log('new ed', data);
             $scope.closeFolderNav();
             $scope.selectedEditor = $scope.editors.length - 1;
             if (!$scope.$$phase)
@@ -56,7 +59,7 @@ angular.module('AkeraDevStudio')
                file.name = props.name;
                file.path = props.path;
 
-               fileUtil.createFile(dataStore.getData('brokerName'), file).then(function() {
+               fileUtil.createFile(file).then(function() {
                  $mdToast.show($mdToast.simple().content(file.name + ' was successfully saved.'));
                  file.isNew = false;
                  $scope.save();
@@ -65,7 +68,7 @@ angular.module('AkeraDevStudio')
                });
              });
            } else {
-          fileUtil.saveFile(dataStore.getData('brokerName'), $scope.editors[$scope.selectedEditor].file).then(function() {
+          fileUtil.saveFile($scope.editors[$scope.selectedEditor].file).then(function() {
               $mdToast.show($mdToast.simple().content($scope.editors[$scope.selectedEditor].file.name + ' was successfully saved.'));
           }, function(err) {
               $mdToast.show($mdToast.simple().content(err.data ? err.data.message : (err.message || 'There was an error saving changes to ' + $scope.editors[$scope.selectedEditor].file.name)));
@@ -82,10 +85,10 @@ angular.module('AkeraDevStudio')
             }).then(function(props) {
               file.name = props.name;
               file.path = props.path;
-              fileUtil.createFile(dataStore.getData('brokerName'), file).then(function() {
+              fileUtil.createFile(file).then(function() {
                 $mdToast.show($mdToast.simple().content(file.name + ' was sucessfully saved.'));
                 file.isNew = false;
-                fileUtil.saveFile(dataStore.getData('brokeName'), file).then(function() {
+                fileUtil.saveFile(file).then(function() {
                   $scope.runProcedure();
                 }, function(err) {
                   $mdToast.show($mdToast.simple().content(err.data ? err.data.message : (err.message || file.name + 'could not be saved.')));
@@ -138,10 +141,10 @@ angular.module('AkeraDevStudio')
             }).then(function(props) {
               file.name = props.name;
               file.path = props.path;
-              fileUtil.createFile(dataStore.getData('brokerName'), file).then(function() {
+              fileUtil.createFile(file).then(function() {
                 $mdToast.show($mdToast.simple().content(file.name + ' was sucessfully saved.'));
                 file.isNew = false;
-                fileUtil.saveFile(dataStore.getData('brokeName'), file).then(function() {
+                fileUtil.saveFile(file).then(function() {
                   $scope.compile();
                 }, function(err) {
                   $mdToast.show($mdToast.simple().content(err.data ? err.data.message : (err.message || file.name + 'could not be saved.')));
@@ -153,7 +156,7 @@ angular.module('AkeraDevStudio')
           } else {
             apiUtil.compile(file).then(function() {
               $mdToast.show($mdToast.simple().content('Compile successful'));
-              fileUtil.expandNode(dataStore.getData('brokerName'), file.parent);
+              fileUtil.expandNode(file.parent);
             }, function(err) {
               if (!err.length)
                 $mdToast.show($mdToast.simple().content(err.data ? err.data.message : (err.message || 'There was a problem processing your request.')));

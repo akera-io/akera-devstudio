@@ -61,15 +61,9 @@ angular.module('AkeraDevStudio')
                 parameters: $scope.params
             };
             
-            var path = '../';
-            var rest = dataStore.getData('restRoute');
-            if (rest.indexOf('/') === 0)
-              rest = rest.substring(1, rest.length);
-            if (rest.charAt(rest.length - 1) !== '/')
-              rest += '/';
-            path += rest;
-            console.warn('API PATH ' + path + 'api');
-            $http.post(path + 'api', {
+            var path = dataStore.getData('restApiRoute');
+
+            $http.post(path, {
                 call: call
             }).then(function(result) {
                 var childScope = $scope.$parent.$new();

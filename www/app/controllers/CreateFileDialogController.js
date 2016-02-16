@@ -2,21 +2,21 @@ angular.module('AkeraDevStudio')
     .controller('CreateFileDialog', ['$scope', 'DataStore', '$mdDialog', 'FileUtil', '$mdToast', '$rootScope', function($scope, dataStore, $mdDialog, fileUtil, $mdToast, $rootScope) {
         $scope.newType = 'Folder';
         $scope.createItem = function() {
-            fileUtil.createFile(dataStore.getData('brokerName'), {
+            fileUtil.createFile({
                     path: dataStore.getData('selectedFile').$modelValue.path + '/' + $scope.newName,
                     type: $scope.newType.toLowerCase()
                 })
                 .then(function() {
                     var isRoot = dataStore.getData('selectedFile').title === 'Root';
                     if (isRoot) {
-                        fileUtil.requestRootFileStructure(dataStore.getData('brokerName'))
+                        fileUtil.requestRootFileStructure()
                             .then(function(result) {
                                 dataStore.storeData('fileTree', result);
                             }, function(err) {
                                 throw err;
                             });
                     } else {
-                        fileUtil.expandNode(dataStore.getData('brokerName'), dataStore.getData('selectedFile').$modelValue)
+                        fileUtil.expandNode(dataStore.getData('selectedFile').$modelValue)
                             .then(null, function(err) {
                                 throw err
                             });

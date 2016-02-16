@@ -5,7 +5,7 @@ angular.module('AkeraDevStudio')
         });
 
         if (dataStore.brokerConfigured === true) {
-            fileUtil.requestRootFileStructure(dataStore.getData('brokerName')).then(function(tree) {
+            fileUtil.requestRootFileStructure().then(function(tree) {
                 $scope.data = tree;
                 dataStore.storeData('fileTree', $scope.data);
             }, function(err) {
@@ -16,7 +16,7 @@ angular.module('AkeraDevStudio')
         $scope.newType = 'Folder';
 
         $scope.edit = function(scope) {
-            fileUtil.requestFileContent(dataStore.getData('brokerName'), scope.$modelValue.path).then(function(response) {
+            fileUtil.requestFileContent(scope.$modelValue.path).then(function(response) {
                 $rootScope.$broadcast('fileOpened', {
                     name: scope.$modelValue.title,
                     content: response || '\n',
@@ -35,7 +35,7 @@ angular.module('AkeraDevStudio')
             }
 
             if (scope.collapsed) {
-                fileUtil.expandNode(dataStore.getData('brokerName'), scope.$modelValue).then(function(result) {
+                fileUtil.expandNode(scope.$modelValue).then(function(result) {
                   dataStore.storeData('fileTree', $scope.data);
                 }, function(err) {
                     $mdToast.show($mdToast.simple().content(err.message || 'There was an error getting contents of the ' + scope.$modelValue.title + ' directory.'));
@@ -56,7 +56,7 @@ angular.module('AkeraDevStudio')
         }
 
         $scope.removeItem = function(scope) {
-            fileUtil.deleteFile(dataStore.getData('brokerName'), scope.$modelValue).then(function() {
+            fileUtil.deleteFile(scope.$modelValue).then(function() {
                 scope.remove();
                 $mdToast.show($mdToast.simple().content(scope.$modelValue.title + ' sucessfully deleted.'));
                 dataStore.storeData('fileTree', $scope.data);
