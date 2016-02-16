@@ -77,7 +77,7 @@ angular.module('AkeraDevStudio').service('FileUtil',
 
       var requestFileContent = function(path) {
         var deferred = $q.defer();
-        $http.get(getFileRestPath(file)).success(function(result) {
+        $http.get(getFileRestPath(path)).success(function(result) {
           deferred.resolve(result);
         }).error(function(err) {
           deferred.reject(err);
@@ -154,7 +154,7 @@ angular.module('AkeraDevStudio').service('FileUtil',
         if (file) {
           file = file.path || file;
 
-          if (file.indexOf('/') !== -1)
+          if (file.indexOf('/') === 0)
             restPath += file.substring(1);
           else
             restPath += file;
