@@ -20,7 +20,6 @@ angular.module('AkeraDevStudio')
                         {
                             $rootScope.$broadcast('brokerConfigured');
                             this.brokerConfigured = true;
-                            console.log('broadcast broker configured event');
                             break;
                         }
                 }

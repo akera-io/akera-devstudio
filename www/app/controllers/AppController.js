@@ -1,7 +1,17 @@
 angular.module('AkeraDevStudio')
     .controller('AppCtrl', ['$scope', '$mdToast', '$mdSidenav', 'DataStore', 'FileUtil', '$mdDialog', '$rootScope', '$http', 'AkeraApiUtil', function($scope, $mdToast, $mdSideNav, dataStore, fileUtil, $mdDialog, $rootScope, $http, apiUtil) {
-        $scope.editorChanged = function() {
-            $scope.fileModified = true;
+        
+      $scope.editorChanged = function(event) {
+          var editor = event[1];
+            if (editor.isDirrty === undefined && editor.isBeforeInit === undefined) {
+              editor.isBeforeInit = false;
+              editor.isDirrty = false;
+              return;
+            }
+            if (editor.isDirrty === false) {
+              editor.isDirrty = true;
+              $scope.editors[$scope.selectedEditor].isDirrty = true;
+            }
         };
         
         dataStore.storeData('restApiRoute', restApiRoute);
@@ -23,6 +33,8 @@ angular.module('AkeraDevStudio')
             }
             $scope.editors.push({
                 file: data,
+                isDirrty: false,
+                isBeforeInit: true,
                 edId: new Date().getTime()
             });
             $scope.closeFolderNav();
@@ -69,6 +81,7 @@ angular.module('AkeraDevStudio')
              });
            } else {
           fileUtil.saveFile($scope.editors[$scope.selectedEditor].file).then(function() {
+              $scope.editors[$scope.selectedEditor].isDirrty = false;
               $mdToast.show($mdToast.simple().content($scope.editors[$scope.selectedEditor].file.name + ' was successfully saved.'));
           }, function(err) {
               $mdToast.show($mdToast.simple().content(err.data ? err.data.message : (err.message || 'There was an error saving changes to ' + $scope.editors[$scope.selectedEditor].file.name)));
@@ -175,7 +188,16 @@ angular.module('AkeraDevStudio')
         };
         
         $scope.closeEditor = function(editor) {
-            $scope.editors.splice($scope.editors.indexOf(editor), 1);
+            if (editor.isDirrty === true || editor.file.isNew === true) {
+              fileUtil.confirm({
+                content: 'Warning: Any unsaved data will be lost!',
+                ok: 'OK',
+                cancel: 'Cancel'
+              }).then(function() {
+                $scope.editors.splice($scope.editors.indexOf(editor), 1);
+              });
+            } else 
+              $scope.editors.splice($scope.editors.indexOf(editor), 1);
         };
         
         //If there is an active editor, attempt to save

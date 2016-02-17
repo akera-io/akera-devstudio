@@ -6,6 +6,8 @@ angular.module('AkeraDevStudio')
                       {name: '#', field: 'errNum', numeric: true},
                       {name: 'Message', field: 'errMsg'}];
     
+    delete $scope.close;
+    
     $scope.close = function() {
       $mdDialog.hide();
     };

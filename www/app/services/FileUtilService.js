@@ -1,6 +1,5 @@
 angular.module('AkeraDevStudio').service('FileUtil',
-    [ '$http', '$q', 'DataStore', function($http, $q, dataStore) {
-      var data = {};
+    [ '$http', '$q', 'DataStore', '$mdDialog', function($http, $q, dataStore, $mdDialog) {
 
       var getFilePath = function(node) {
         var path = node.$modelValue.title;
@@ -77,7 +76,7 @@ angular.module('AkeraDevStudio').service('FileUtil',
 
       var requestFileContent = function(path) {
         var deferred = $q.defer();
-        $http.get(getFileRestPath(file)).success(function(result) {
+        $http.get(getFileRestPath(path)).success(function(result) {
           deferred.resolve(result);
         }).error(function(err) {
           deferred.reject(err);
@@ -154,13 +153,24 @@ angular.module('AkeraDevStudio').service('FileUtil',
         if (file) {
           file = file.path || file;
 
-          if (file.indexOf('/') !== -1)
+          if (file.indexOf('/') === 0)
             restPath += file.substring(1);
           else
             restPath += file;
         }
 
         return restPath;
+      }
+      
+      var confirm = function(options) {
+        options.ok = options.ok || 'OK';
+        options.cancel = options.cancel || 'Cancel';
+        
+        var preset = $mdDialog.confirm();
+        for (var k in options) {
+          preset = preset[k](options[k]);
+        }
+        return $mdDialog.show(preset);
       }
 
       return {
@@ -173,6 +183,7 @@ angular.module('AkeraDevStudio').service('FileUtil',
         saveFile : saveFile,
         deleteFile : deleteFile,
         baseDir : baseDir,
-        getNode : getNode
+        getNode : getNode,
+        confirm: confirm
       };
     } ]);

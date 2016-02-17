@@ -38,7 +38,7 @@ function DevStudio(akeraWebApp) {
     } catch (err) {
       return null;
     }
-  }
+  };
 
   if (akeraWebApp !== undefined) {
     throw new Error(

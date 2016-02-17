@@ -76,7 +76,7 @@ angular.module('AkeraDevStudio')
         var call = {
             procedure: 'io/akera/rest/fs/compile.p',
             parameters: [{type: 'input', dataType: 'character', alias: 'path', value: file.path},
-                         {type: 'input', dataType: 'logical', alias: 'recursive', value: recursive || false},
+                         {type: 'input', dataType: 'logical', alias: 'recursive', value: recursive !== undefined ? recursive : false},
                          {type: 'input', dataType: 'character', alias: 'compileDir', value: compileDir || ''},
                          {type: 'output', dataType: 'longchar', alias: 'errors'}]
         };

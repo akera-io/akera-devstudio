@@ -9,7 +9,6 @@ angular.module('AkeraDevStudio')
         $scope.path = $scope.path.substring(1);
       if ($scope.path.indexOf('/') !== $scope.path.length - 1)
           $scope.path += '/';
-        console.log($scope.path.substring($scope.path.length - $scope.name.length));
         if ($scope.path.substring($scope.path.length - $scope.name.length) !== $scope.name)
           $scope.path += $scope.name;
         

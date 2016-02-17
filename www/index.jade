@@ -21,17 +21,29 @@ html(lang='en', ng-app='AkeraDevStudio')
             span(ng-if='editors[selectedEditor].file', hide-md='') [{{editors[selectedEditor].file.name}}]
         .md-padding(layout='row', layout-margin='', style='width: autopx; right: 10px; z-index: 10; top: 70px; position: fixed')
           md-button.md-fab.md-primary.md-hue-1(ng-click='newFile()')
-            i.fa.fa-file-text-o 
+            i.fa.fa-file-text-o
+            md-tooltip
+              | New 
           md-button.md-fab.md-primary.md-hue-1(ng-click='openFolderSideNav()', aria-label='Folder Actions')
             i.fa.fa-folder-open-o
+            md-tooltip
+              | Open
           md-button.md-fab.md-primary.md-hue-1(ng-click='save()', aria-label='File Actions', ng-disabled='!editors[selectedEditor].file')
             i.fa.fa-floppy-o
+            md-tooltip
+              | Save
           md-button.md-fab.md-primary.md-hue-1(ng-click='runProcedure()', ng-disabled='!editors[selectedEditor].file || !editors[selectedEditor].file.content')
             i.fa.fa-cog
+            md-tooltip
+              | Run
           md-button.md-fab.md-primary.md-hue-1(ng-click='checkSyntax()', ng-disabled='!editors[selectedEditor].file')
             i.fa.fa-check
+            md-tooltip
+              | Check Syntax
           md-button.md-fab.md-primary.md-hue-1(ng-click='compile()', ng-disabled='!editors[selectedEditor].file')
             i.fa.fa-cogs
+            md-tooltip
+              | Compile
     md-tabs(md-selected='selectedEditor', md-dynamic-height='true', md-no-ink='true')
       md-tab(ng-repeat='editor in editors')
         md-tab-label(layout='row')

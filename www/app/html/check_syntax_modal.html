@@ -3,7 +3,7 @@
 	<span>Syntax Check</span> <span flex></span>
 </div>
 </md-toolbar> <md-content layout="column">
-<md-data-table-container>
+<md-data-table-container style="max-height: 250px; overflow-y: auto;">
 <table md-data-table style="margin-top:10px;" md-row-select="selected">
     <thead>
         <tr>
@@ -25,6 +25,7 @@
     </tbody>
 </table>
 </md-data-table-container>
+<md-table-pagination md-limit="5" md-page="1" md-total="{{errors.length}}" md-on-paginate="onPaginate" md-page-select></md-table-pagination>
 
 <div class="md-actions">
 	<md-button type="submit" aria-label="OK" value="OK"

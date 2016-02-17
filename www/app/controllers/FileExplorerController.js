@@ -56,23 +56,41 @@ angular.module('AkeraDevStudio')
         }
 
         $scope.removeItem = function(scope) {
-            fileUtil.deleteFile(scope.$modelValue).then(function() {
-                scope.remove();
-                $mdToast.show($mdToast.simple().content(scope.$modelValue.title + ' sucessfully deleted.'));
-                dataStore.storeData('fileTree', $scope.data);
-            }, function(err) {
-                $mdToast.show($mdToast.simple().content('There was an error deleting ' + $scope.file.name));
-            });
+          fileUtil.confirm({
+            content: 'Are you sure you want to delete \"' + scope.$modelValue.title + '\"?',
+            ok: 'Yes',
+            cancel: 'No',
+            title: 'Confirm Delete'
+          }).then(function() {
+              fileUtil.deleteFile(scope.$modelValue).then(function() {
+                  scope.remove();
+                  $mdToast.show($mdToast.simple().content(scope.$modelValue.title + ' sucessfully deleted.'));
+                  //dataStore.storeData('fileTree', $scope.data);
+              }, function(err) {
+                  $mdToast.show($mdToast.simple().content('There was an error deleting ' + scope.$modelValue.title));
+              });
+          });
         }
         
         $scope.showCompileMenu = function(node, event, menuFn) {
             $scope.compileMenuAction = function() {
-              var chldScope = $scope.$new();
+             var chldScope = $scope.$new();
               chldScope.selectedNode = node;
               $mdDialog.show({
                 templateUrl: './app/html/compile_dir_modal.html',
                 controller: 'CompileDirController',
                 scope: chldScope
+              }).then(function(err) {
+                if (err) {
+                  var errors = err;
+                  var chld = $scope.$new();
+                  chld.errors = errors;
+                  $mdDialog.show({
+                    scope: chld,
+                    controller: 'CheckSyntaxController',
+                    templateUrl: './app/html/check_syntax_modal.html'
+                  });
+                }
               });
             };
             menuFn(event);
