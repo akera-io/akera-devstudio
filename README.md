@@ -37,20 +37,23 @@ $ npm install akera-devstudio
 ```
   
   Service options available:
-	- `route`: the route where the service is going to be mounted (default: '/devstudio/')
+
+- `route`: the route where the service is going to be mounted (default: '/devstudio/')
   
   This is a simple web user-interface that allows developers to edit or create new business procedures
   on application server `web-path`. Beside editing file's content some helpful functions are also available:
-  	- check syntax 
-  	- compile, file or whole folder
-  	- run business logic procedures by passing any required input/output parameters
+
+- check syntax 
+- compile, file or whole folder
+- run business logic procedures by passing any required input/output parameters
 
 ## Dependencies
   Although there is no direct dependency of those modules, in order to `mount` the 
   developer studio on an application server web-service the following modules need to be
   mounted as well:
-  	- [akera-rest-api](https://www.npmjs.com/package/akera-rest-api)
-  	- [akera-rest-file](https://www.npmjs.com/package/akera-rest-file)
+
+- [akera-rest-api](https://www.npmjs.com/package/akera-rest-api)
+- [akera-rest-file](https://www.npmjs.com/package/akera-rest-file)
   	
   If available those will be automatically mounted, otherwise the module will also fail to load. 
 
