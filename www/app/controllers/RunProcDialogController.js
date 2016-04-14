@@ -71,12 +71,13 @@ angular.module('AkeraDevStudio')
 
                 var outputParams = [];
                 $scope.params.forEach(function(param) {
-                    if (param.type === 'output')
+                    if (param.type === 'output' || param.type === 'inout')
                         outputParams.push(param);
                 });
 
                 for (var i in result.data.parameters) {
-                    outputParams[i].value = result.data.parameters[i];
+                  var param = outputParams[i];
+                    param.value = param.dataType === 'DATE' || param.dataType === 'DATETIME' ? new Date(result.data.parameters[i]) : result.data.parameters[i];
                 }
                 childScope.params = outputParams;
                 $mdDialog.hide().then(function() {
