@@ -13,12 +13,12 @@ html(lang='en', ng-app='AkeraDevStudio')
     link(rel='stylesheet', type='text/css', href='libs/kendo-ui/kendo.common-material.min.css')
     link(rel='stylesheet', type='text/css', href='libs/kendo-ui/kendo.material.min.css')
     link(rel='stylesheet', type='text/css', href='css/style.css')
-    title Akera.io Developer Studio
+    title akera.io Developer Studio
   body(style='font-size: 200%;', layout-wrap='column', ng-controller='AppCtrl')
     md-toolbar(layout='row')
         md-toolbar-tools
           h1
-            span Akera DevStudio [#{broker}]
+            span Developer Studio [#{broker}]
             span(ng-if='editors[selectedEditor].file', hide-md='') [{{editors[selectedEditor].file.name}}]
         .md-padding(layout='row', layout-margin='', style='width: autopx; right: 10px; z-index: 10; top: 70px; position: fixed')
           md-button.md-fab.md-primary.md-hue-1(ng-click='newFile()')

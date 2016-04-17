@@ -36,3 +36,7 @@ md-sidenav.md-closed.md-locked-open-add-active {
 .big-col {
 	width: 400px;
 }
+
+.full-cell-width {
+	width: 95%; important; 
+}

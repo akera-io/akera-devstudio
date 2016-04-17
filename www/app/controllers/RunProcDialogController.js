@@ -1,99 +1,112 @@
-angular.module('AkeraDevStudio')
-    .controller('RunProcDialog', ['$scope', '$mdToast', '$http', 'DataStore', '$mdDialog', function($scope, $mdToast, $http, dataStore, $mdDialog) {
-        $scope.params = [];
-        $scope.selected = [];
-        var datatypes = ['CHARACTER', 'LOGICAL', 'INTEGER', 'INT64', 'DATE', 'DATETIME', 'LONGCHAR', 'DECIMAL'];
-        $scope.columns = [{
-            name: 'Alias'
-        }, {
-            name: 'Data Type'
-        }, {
-            name: 'Value'
-        }, {
-            name: 'Type'
-        }];
-        $scope.getDataTypes = function(text) {
+angular.module('AkeraDevStudio').controller(
+    'RunProcDialog',
+    [
+        '$scope',
+        '$mdToast',
+        '$http',
+        'DataStore',
+        '$mdDialog',
+        function($scope, $mdToast, $http, dataStore, $mdDialog) {
+          // retrieve run parameters from parent scope if already ran before
+          $scope.params = $scope.$parent.runParams
+              && $scope.$parent.runParams[$scope.proc] || [];
+          $scope.selected = [];
+          $scope.datatypes = [ 'CHARACTER', 'DATASET', 'DATE',
+                               'DATETIME', 'DECIMAL', 'INTEGER', 'INT64', 'LOGICAL', 'LONGCHAR', 'TABLE' ];
+
+          $scope.getDataTypes = function(text) {
             var results = [];
             datatypes.forEach(function(dt) {
-                if (dt.indexOf(text.toUpperCase()) >= 0)
-                    results.push(dt);
+              if (dt.indexOf(text.toUpperCase()) >= 0)
+                results.push(dt);
             });
             return results;
-        }
-        $scope.addParam = function() {
+          }
+          $scope.addParam = function() {
             var newParam = {
-                dataType: 'CHARACTER',
-                type: 'input'
+              dataType : 'CHARACTER',
+              type : 'input',
+              value : null
             };
             $scope.params.push(newParam);
-        }
+          }
 
-        $scope.removeParams = function() {
+          $scope.removeParams = function() {
             $scope.selected.forEach(function(param) {
-                $scope.params.splice($scope.params.indexOf(param), 1);
+              $scope.params.splice($scope.params.indexOf(param), 1);
             });
             $scope.selected = [];
-        }
+          }
 
-        $scope.updateSelection = function(param) {
+          $scope.updateSelection = function(param) {
             if (param.selected)
-                $scope.selected.push(param);
-            else $scope.selected.splice($scope.selected.indexOf(param), 1);
-        }
+              $scope.selected.push(param);
+            else
+              $scope.selected.splice($scope.selected.indexOf(param), 1);
+          }
 
-        $scope.validateParams = function() {
-            for (var i in $scope.params) {
-                var param = $scope.params[i];
-                if (!param.dataType || !param.type || (param.type === 'input' && !param.value)) {
-                    return false;
-                }
+          $scope.validateParams = function() {
+            for ( var i in $scope.params) {
+              var param = $scope.params[i];
+              if (!param.dataType || !param.type
+                  || (param.type === 'input' && !param.value)) {
+                return false;
+              }
             }
             return true;
-        }
+          }
 
-        $scope.run = function() {
-            if (!$scope.validateParams()) {
-                $mdToast.show($mdToast.simple().content('Cannot run because some parameters are not correctly configured.'));
-                return;
-            }
+          $scope.run = function() {
+            // save run parameters in parent scope for later calls
+            $scope.$parent.runParams = $scope.$parent.runParams || {};
+            $scope.$parent.runParams[$scope.proc] = $scope.params;
+
             var call = {
-                procedure: $scope.proc,
-                parameters: $scope.params
+              procedure : $scope.proc,
+              parameters : $scope.params
             };
-            
+
             var path = dataStore.getData('restApiRoute');
 
             $http.post(path, {
-                call: call
-            }).then(function(result) {
-                var childScope = $scope.$parent.$new();
-                childScope.output = JSON.stringify(result.data.parameters);
+              call : call
+            }).then(
+                function(result) {
+                  var childScope = $scope.$parent.$new();
+                  childScope.output = JSON.stringify(result.data.parameters);
 
-                var outputParams = [];
-                $scope.params.forEach(function(param) {
+                  var outputParams = [];
+                  $scope.params.forEach(function(param, idx) {
                     if (param.type === 'output' || param.type === 'inout')
-                        outputParams.push(param);
-                });
+                      outputParams.push({
+                        value : param.value,
+                        alias : param.alias || '[' + idx + '] - ' + param.type
+                      });
+                  });
 
-                for (var i in result.data.parameters) {
-                  var param = outputParams[i];
-                    param.value = param.dataType === 'DATE' || param.dataType === 'DATETIME' ? new Date(result.data.parameters[i]) : result.data.parameters[i];
-                }
-                childScope.params = outputParams;
-                $mdDialog.hide().then(function() {
+                  for ( var i in result.data.parameters) {
+                    var param = outputParams[i];
+                    param.value = param.dataType === 'DATE'
+                        || param.dataType === 'DATETIME' ? new Date(
+                        result.data.parameters[i]) : result.data.parameters[i];
+                  }
+                  childScope.params = outputParams;
+                  $mdDialog.hide().then(function() {
                     $mdDialog.show({
-                        templateUrl: 'app/html/proc_output_modal.html',
-                        scope: childScope,
-                        controller: 'OutputDialog'
+                      templateUrl : 'app/html/proc_output_modal.html',
+                      scope : childScope,
+                      controller : 'OutputDialog'
                     });
+                  });
+                },
+                function(err) {
+                  console.error(err);
+                  $mdToast.show($mdToast.simple().content(
+                      err.data.message || err));
                 });
-            }, function(err) {
-                console.error(err);
-                $mdToast.show($mdToast.simple().content(err.data.message || err));
-            });
-        };
+          };
 
-        $scope.close = function() {
+          $scope.close = function() {
             $mdDialog.cancel();
-        };
-    }]);
+          };
+        } ]);
