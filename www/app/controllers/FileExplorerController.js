@@ -85,6 +85,7 @@ angular.module('AkeraDevStudio')
                   var errors = err;
                   var chld = $scope.$new();
                   chld.errors = errors;
+                  chld.isDir = true;
                   $mdDialog.show({
                     scope: chld,
                     controller: 'CheckSyntaxController',

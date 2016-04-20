@@ -1,36 +1,46 @@
-<md-dialog> <md-toolbar>
-<div class="md-toolbar-tools">
-	<span>Syntax Check</span> <span flex></span>
-</div>
-</md-toolbar> <md-content layout="column">
-<md-data-table-container style="max-height: 250px; overflow-y: auto;">
-<table md-data-table style="margin-top:10px;" md-row-select="selected">
-    <thead>
-        <tr>
-            <th ng-repeat="column in columns" ng-attr-numeric="{{column.numeric}}" name="{{column.name}}" ng-class="{'small-col': column.numeric}">
-                {{column.name}}
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr md-auto-select ng-repeat="error in errors">
-            <td ng-repeat="column in columns" ng-class="{'small-col': column.numeric}">
-            	<md-tooltip ng-if="!column.numeric">
-            		{{error[column.field]}}
-            	</md-tooltip>
-            	<input class="k-textbox big-col" ng-if="!column.numeric" type="text" ng-model="error[column.field]" disabled="true"/>
-            	<input class="k-textbox small-col" ng-if="column.numeric" type="number" ng-model="error[column.field]" disabled="true"/>
-            </td>
-        </tr>
-    </tbody>
-</table>
-</md-data-table-container>
-<md-table-pagination md-limit="5" md-page="1" md-total="{{errors.length}}" md-on-paginate="onPaginate" md-page-select></md-table-pagination>
-
-<div class="md-actions">
-	<md-button type="submit" aria-label="OK" value="OK"
-		ng-click="close()">
-		OK
-    </md-button>
-</div>
-</md-content> </md-dialog>
+<md-dialog flex="85">
+	<md-dialog-content layout="column"> 
+		<md-toolbar layout="row" layout-align="space-around center">
+	    		<h2>Compilation Errors</h2>
+	    </md-toolbar>
+	
+		<md-data-table-container style="max-height: 250px; overflow-y: auto;">
+			<table md-data-table style="margin-top:10px;" md-row-select="selected">
+			    <thead>
+			        <tr md-row>
+		                <th md-column class="col-md-3" ng-if="isDir">File</th>
+		                <th md-column class="col-md-1 text-right">Row</th>
+		                <th md-column class="col-md-1 text-right">Col</th>
+		                <th md-column class="col-md-1 text-right">#Num</th>
+		                <th md-column class="{col-md-6: isDir, col-md-9: !isDir}">Message</th>
+		            </tr>
+			    </thead>
+			    <tbody>
+			        <tr md-auto-select ng-repeat="error in errors">
+			        		<td md-cell ng-if="isDir">
+		                    <input class="k-textbox full-cell-width" type="text" disabled="true" ng-model="error.errFile"/>
+		                </td>
+			        		<td md-cell>
+		                    <input class="k-textbox full-cell-width text-right" type="text" disabled="true" ng-model="error.errRow"/>
+		                </td>
+		                <td md-cell>
+		                    <input class="k-textbox full-cell-width text-right" type="text" disabled="true" ng-model="error.errCol"/>
+		                </td>
+		                <td md-cell>
+		                    <input class="k-textbox full-cell-width text-right" type="text" disabled="true" ng-model="error.errNum"/>
+		                </td>
+		                <td md-cell>
+		                    <input class="k-textbox full-cell-width" type="text" disabled="true" ng-model="error.errMsg"/>
+		                </td>
+			        </tr>
+			    </tbody>
+			</table>
+		</md-data-table-container>
+	
+		<md-table-pagination md-limit="5" md-page="1" md-total="{{errors.length}}" md-on-paginate="onPaginate" md-page-select></md-table-pagination>
+	</md-dialog-content>
+	
+	<md-dialog-actions>
+    		<md-button class="md-primary md-raised" ng-click="close()">Close</md-button>
+	</md-dialog-actions>
+</md-dialog>

@@ -1,18 +1,16 @@
-<md-dialog> <md-toolbar>
-<div class="md-toolbar-tools">
-	<span>Compile {{selectedNode.type.toLowerCase()}}</span> <span flex></span>
-</div>
-</md-toolbar> <md-content layout="column" layout-margin>
-<md-input-container style="margin-top: 30px;">
-	<label>Compile Directory</label>
-	<input type="text" ng-model="compileDir"/>
-</md-input-container>
-<md-checkbox ng-model="$parent.recursiveCompile" ng-if="selectedNode.type.toLowerCase() === 'folder'">Recursive</md-checkbox>
-<div class="md-actions">
-	<md-button type="submit" aria-label="OK" value="OK"
-		ng-click="ok()">
-		Cancel
-    </md-button>
-    <md-button aria-label="Compile" ng-click="compileFolder()">Compile</md-button>
-</div>
-</md-content> </md-dialog>
+<md-dialog flex="75">
+	<md-dialog-content layout="column" layout-margin>
+		<md-toolbar layout="row" layout-align="space-around center">
+			<h2>Compile {{selectedNode.type.toLowerCase()}}</h2>
+		</md-toolbar>
+		<md-input-container style="margin-top: 30px;">
+			<label>Compile Into</label>
+			<input type="text" ng-model="compileDir"/>
+		</md-input-container>
+		<md-checkbox ng-model="$parent.recursiveCompile" ng-if="selectedNode.type.toLowerCase() === 'folder'">Recursive</md-checkbox>
+	</md-dialog-content>
+	<md-dialog-actions>
+	    <md-button class="md-default md-raised" ng-click="ok()">OK</md-button>
+	    <md-button class="md-primary md-raised" aria-label="Compile" value="Compile" ng-click="compileFolder()">Compile</md-button>
+	</md-dialog-actions>
+</md-dialog>
